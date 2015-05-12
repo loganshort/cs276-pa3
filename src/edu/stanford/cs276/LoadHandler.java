@@ -102,7 +102,11 @@ public class LoadHandler {
 			ois.close();
 			fis.close();
 		}
-		catch(IOException | ClassNotFoundException ioe) {
+		catch(IOException ioe) {
+			ioe.printStackTrace();
+			return null;
+		}
+		catch(ClassNotFoundException ioe) {
 			ioe.printStackTrace();
 			return null;
 		}
