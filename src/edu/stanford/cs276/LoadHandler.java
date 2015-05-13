@@ -161,6 +161,7 @@ public class LoadHandler {
 		}
 		
 		System.out.println(totalDocCount);
+		termDocCount.put("DocCount", Math.log(totalDocCount + 1));
 		
 		// Make idf using df
 		for (String term : termDocCount.keySet()) {
