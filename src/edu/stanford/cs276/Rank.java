@@ -122,7 +122,10 @@ public class Rank {
 	public static void main(String[] args) throws IOException {
 
 		// To store the idfs for different words in the collection
-		Map<String,Double> idfs = null;
+		Map<String,Double> idfs = LoadHandler.loadDFs("idfs");
+		if (idfs == null) {
+			idfs = LoadHandler.buildDFs("data", "idfs");
+		}
 		
 		/*
 		 * @//TODO : Your code here to handle idfs
@@ -158,6 +161,6 @@ public class Rank {
 		 */
 		
 		// Print results
-		printRankedResults(queryRankings);
+		//printRankedResults(queryRankings);
 	}
 }
