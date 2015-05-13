@@ -48,10 +48,13 @@ public class Rank {
 			Collections.sort(urlAndScores, new Comparator<Pair<String,Double>>() {
 				@Override
 				public int compare(Pair<String, Double> o1, Pair<String, Double> o2) {
-					/*
-					 * @//TODO : Your code here
-					 */
-					return -1;
+					if (o1.getSecond() > o2.getSecond()) {
+						return -1;
+					} else if (o2.getSecond() > o1.getSecond()) {
+						return 1;
+					} else {
+						return 0;
+					}
 				}	
 			});
 			
@@ -101,13 +104,13 @@ public class Rank {
 				}
 				
 				String queryStr = "query: " + queryBuilder.toString() + "\n";
-				System.out.print(queryStr);
+				//System.out.print(queryStr);
 				bw.write(queryStr);
 				
 				for (String res : queryRankings.get(query))
 				{
 					String urlString = "  url: " + res + "\n";
-					System.out.print(urlString);
+					//System.out.print(urlString);
 					bw.write(urlString);
 				}
 			}	
@@ -122,7 +125,10 @@ public class Rank {
 	public static void main(String[] args) throws IOException {
 
 		// To store the idfs for different words in the collection
-		Map<String,Double> idfs = null;
+		Map<String,Double> idfs = LoadHandler.loadDFs("idfs");
+		if (idfs == null) {
+			idfs = LoadHandler.buildDFs("data", "idfs");
+		}
 		
 		/*
 		 * @//TODO : Your code here to handle idfs
@@ -151,13 +157,11 @@ public class Rank {
 		// Score documents for queries
 		Map<Query,List<String>> queryRankings = score(queryDict, scoreType, idfs);
 		
-		// Print results and save them to file (This is not necessary)
-		/*
-		  String outputFilePath =  null;
-		  writeRankedResultsToFile(queryRankings,outputFilePath);
-		 */
+
+		String outputFilePath =  "output.txt";
+		writeRankedResultsToFile(queryRankings,outputFilePath);
 		
 		// Print results
-		printRankedResults(queryRankings);
+		//printRankedResults(queryRankings);
 	}
 }

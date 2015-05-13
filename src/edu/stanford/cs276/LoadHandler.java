@@ -102,7 +102,11 @@ public class LoadHandler {
 			ois.close();
 			fis.close();
 		}
-		catch(IOException | ClassNotFoundException ioe) {
+		catch(IOException ioe) {
+			ioe.printStackTrace();
+			return null;
+		}
+		catch(ClassNotFoundException ioe) {
 			ioe.printStackTrace();
 			return null;
 		}
@@ -110,7 +114,7 @@ public class LoadHandler {
 	}
 	
 	// Build document frequencies and then serializes to file
-	public static Map<String,Double> buildDFs(String dataDir, String idfFile)
+	public static Map<String,Double> buildDFs(String dataDir, String idfFile) throws IOException
 	{
 		
 		// Get root directory
@@ -128,17 +132,40 @@ public class LoadHandler {
 		// Count number of documents in which each term appears
 		Map<String,Double> termDocCount = new HashMap<String,Double>();
 		
-		/*
-		 * @//TODO : Your code here -- consult PA1 (will be a simplified version)
-		 */
+		for (File block : dirlist) {
+            File blockDir = new File(root, block.getName());
+            File[] filelist = blockDir.listFiles();
+    
+            /* For each file */ 
+            for (File file : filelist) {
+                ++totalDocCount;   
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+                Set<String> termsInDoc = new HashSet<String>();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] tokens = line.trim().split("\\s+");
+                    for (String token : tokens) {
+                    	termsInDoc.add(token);
+                    }
+
+                }
+                for (String term : termsInDoc) {
+                	if (termDocCount.containsKey(term) == false) {
+                    	termDocCount.put(term, 1.0);
+                    } else {           
+                    	termDocCount.put(term, termDocCount.get(term)+1);
+                    }
+                }
+                reader.close();
+            }
+		}
 		
 		System.out.println(totalDocCount);
+		termDocCount.put("DocCount", Math.log(totalDocCount + 1));
 		
 		// Make idf using df
 		for (String term : termDocCount.keySet()) {
-			/*
-			 * @//TODO : Your code here
-			 */
+			termDocCount.put(term, Math.log(totalDocCount/termDocCount.get(term)));
 		}
 		
 		

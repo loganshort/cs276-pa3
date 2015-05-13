@@ -22,34 +22,52 @@ public class CosineSimilarityScorer extends AScorer {
 
 	public CosineSimilarityScorer(Map<String,Double> idfs) {
 		super(idfs);
+		weights = new HashMap<String, Double>();
+		weights.put("url", urlweight);
+		weights.put("title", titleweight);
+		weights.put("body", bodyweight);
+		weights.put("header", headerweight);
+		weights.put("anchor", anchorweight);
 	}
 
 	/////////////// Weights //////////////////
-	double urlweight = -1;
-	double titleweight = -1;
-	double bodyweight = -1;
-	double headerweight = -1;
-	double anchorweight = -1;
+	double urlweight = 1;
+	double titleweight = 1;
+	double bodyweight = 1;
+	double headerweight = 1;
+	double anchorweight = 1;
+	Map<String, Double> weights;
 
-	double smoothingBodyLength = -1; // Smoothing factor when the body length is 0.
+	double smoothingBodyLength = 500; // Smoothing factor when the body length is 0.
+	
 	//////////////////////////////////////////
 
 	public double getNetScore(Map<String, Map<String, Double>> tfs, Query q, Map<String,Double> tfQuery, Document d) {
 		double score = 0.0;
 		
-		/*
-		 * @//TODO : Your code here
-		 */
-		
+		// Compute dot product.
+		List<Double> tfDocument = new ArrayList<Double>();
+		for (String field : tfs.keySet()) {
+			Map<String, Double> current = tfs.get(field);
+			for (String term : q.queryWords) {
+				if (idfs.containsKey(term)) {
+					score += idfs.get(term)*tfQuery.get(term)*weights.get(field)*current.get(term);
+				} else {
+					score += idfs.get("DocCount")*tfQuery.get(term)*weights.get(field)*current.get(term);
+				}
+			}
+		}
 		return score;
 	}
 
 	// Normalize the term frequencies. Note that we should give uniform normalization to all fields as discussed
 	// in the assignment handout.
 	public void normalizeTFs(Map<String,Map<String, Double>> tfs,Document d, Query q) {
-		/*
-		 * @//TODO : Your code here
-		 */
+		for (Map<String, Double> current : tfs.values()) {
+			for (String term : current.keySet()) {
+				current.put(term, current.get(term) / (d.body_length + smoothingBodyLength));
+			}
+		}
 	}
 
 
