@@ -32,11 +32,11 @@ public class BM25Scorer extends AScorer {
 
 
 	/////////////// Weights /////////////////
-	double urlweight = 1;
+	double urlweight = 0.1;
 	double titleweight  = 1;
-	double bodyweight = 1;
-	double headerweight = 1;
-	double anchorweight = 1;
+	double bodyweight = 0.1;
+	double headerweight = 0.3;
+	double anchorweight = 0.1;
 	Map<String, Double> weights;
 
 	/////// BM25 specific weights ///////////
@@ -47,7 +47,7 @@ public class BM25Scorer extends AScorer {
 	double banchor=0.75;
 	Map<String, Double> bvalues;
 
-	double k1=1.6;
+	double k1=2.8;
 	double pageRankLambda=1;
 	double pageRankLambdaPrime=1;
 	//////////////////////////////////////////
@@ -103,7 +103,7 @@ public class BM25Scorer extends AScorer {
 				}
 				
 				if (doc.anchors != null) {
-					Double anchorLength = getLength(doc.anchors.keySet());
+					Double anchorLength = getAnchorLength(doc.anchors);
 					docDict.put("anchor",anchorLength);
 					avgLengths.put("anchor", avgLengths.get("anchor")+anchorLength);
 				}
@@ -138,6 +138,14 @@ public class BM25Scorer extends AScorer {
 		double length = 0.0;
 		for (String s : input) {
 			length += 1.0*s.trim().split("\\s+").length;
+		}
+		return length;
+	}
+	
+	private double getAnchorLength(Map<String, Integer> input) {
+		double length = 0.0;
+		for (String s : input.keySet()) {
+			length += 1.0*s.trim().split("\\s+").length*input.get(s);
 		}
 		return length;
 	}
