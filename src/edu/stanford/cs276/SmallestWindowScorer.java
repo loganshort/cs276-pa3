@@ -65,8 +65,7 @@ public class SmallestWindowScorer extends CosineSimilarityScorer {
 				terms.set(i, field);
 			}
 		}
-		return Integer.MAX_VALUE;
-		//return findSmallestWindow(terms, q);
+		return findSmallestWindow(terms, q);
 	}
 	
 	public double getBoost(Document d, Map<String,Double> q) {
@@ -90,7 +89,7 @@ public class SmallestWindowScorer extends CosineSimilarityScorer {
 		}
 		if (d.body_hits != null) {
 			Map<String, List<Integer>> queryHits = new HashMap<String, List<Integer>>();
-			boolean inf = false;
+			boolean inf = true;
 			for (String term : q.keySet()) {
 				if (!d.body_hits.containsKey(term) || d.body_hits.get(term).size() == 0) inf = true;
 				queryHits.put(term, d.body_hits.get(term));
