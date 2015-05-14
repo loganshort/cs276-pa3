@@ -91,16 +91,14 @@ public abstract class AScorer {
 			}
 		}
 		if (d.anchors != null) {
-			for (String term : d.anchors.keySet()) {
-				if (!terms.contains(term)) continue;
-				tfsBody.put(term, tfsAnchor.get(term)+d.anchors.get(term));
+			for (String anchor : d.anchors.keySet()) {
+				for (String term : anchor.split("\\s+")) {
+					if (!terms.contains(term)) continue;
+					tfsBody.put(term, tfsAnchor.get(term)+d.anchors.get(anchor));
+				}
 			}
 		}
-		
-		// Loop through query terms and increase relevant tfs. Note: you should do this to each type of term frequencies.
-		for (String queryWord : q.queryWords) {
-			
-		}
+
 		tfs.put("url", tfsUrl);
 		tfs.put("title", tfsTitle);
 		tfs.put("body", tfsBody);
