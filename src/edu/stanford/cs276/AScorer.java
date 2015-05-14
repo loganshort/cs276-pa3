@@ -94,7 +94,7 @@ public abstract class AScorer {
 			for (String anchor : d.anchors.keySet()) {
 				for (String term : anchor.split("\\s+")) {
 					if (!terms.contains(term)) continue;
-					tfsBody.put(term, tfsAnchor.get(term)+d.anchors.get(anchor));
+					tfsAnchor.put(term, tfsAnchor.get(term)+(1.0*d.anchors.get(anchor)));
 				}
 			}
 		}
