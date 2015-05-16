@@ -32,7 +32,7 @@ public class BM25Scorer extends AScorer {
 
 
 	/////////////// Weights /////////////////
-	double urlweight = 0.1;
+	double urlweight = 1;
 	double titleweight  = 1;
 	double bodyweight = 0.1;
 	double headerweight = 0.3;
@@ -42,14 +42,14 @@ public class BM25Scorer extends AScorer {
 	/////// BM25 specific weights ///////////
 	double burl=0.75;
 	double btitle=0.75;
-	double bheader=0.75;
+	double bheader=0.7;
 	double bbody=0.75;
-	double banchor=0.75;
+	double banchor=0.4;
 	Map<String, Double> bvalues;
 
-	double k1=2.8;
-	double pageRankLambda=1;
-	double pageRankLambdaPrime=1;
+	double k1=3.0;
+	double pageRankLambda=2.0;
+	double pageRankLambdaPrime=3.0;
 	//////////////////////////////////////////
 
 	/////// BM25 data structures - feel free to modify ///////
@@ -176,6 +176,14 @@ public class BM25Scorer extends AScorer {
 	private double pageRankScore(Document d) {
 		return pageRankLambda * Math.log(pageRankLambdaPrime+pagerankScores.get(d));
 	}
+	
+	/*private double pageRankScore(Document d) {
+		return pageRankLambda * pagerankScores.get(d)/(pageRankLambdaPrime + pagerankScores.get(d));
+	}*/
+	
+	/*private double pageRankScore(Document d) {
+		return pageRankLambda * 1/(pageRankLambdaPrime + Math.exp(-1*pagerankScores.get(d)*pageRankLambdaPrime));
+	}*/
 
 	//do bm25 normalization
 	public void normalizeTFs(Map<String,Map<String, Double>> tfs,Document d, Query q) {
@@ -190,6 +198,10 @@ public class BM25Scorer extends AScorer {
 					if (lengths.get(d).get(field) == null) {
 						fieldtf.put(term, tf/(1 + bvalues.get(field)*((0.0/avgLengths.get(field))-1)));
 					} else {
+						if(field.equals("url")) {
+							if (tf != 0.0)
+							System.out.println(tf);
+						}
 						fieldtf.put(term, tf/(1 + bvalues.get(field)*((lengths.get(d).get(field)/avgLengths.get(field))-1)));
 					}
 				}

@@ -31,14 +31,14 @@ public class CosineSimilarityScorer extends AScorer {
 	}
 
 	/////////////// Weights //////////////////
-	double urlweight = 0.1;
-	double titleweight  = 1;
-	double bodyweight = 0.13;
-	double headerweight = 0.34;
-	double anchorweight = 0.5;
+	double urlweight = 1;
+	double titleweight  = 0.8;
+	double bodyweight = 0.6;
+	double headerweight = 0.5;
+	double anchorweight = 1;
 	Map<String, Double> weights;
 
-	double smoothingBodyLength = 600; // Smoothing factor when the body length is 0.
+	double smoothingBodyLength = 1000; // Smoothing factor when the body length is 0.
 	
 	//////////////////////////////////////////
 
